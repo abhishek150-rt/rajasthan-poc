@@ -50,7 +50,7 @@ export const styles = {
     marginRight: "50px",
   },
   card: {
-    width: "500px",
+    maxWidth: "500px",
     border: "1px solid rgba(255, 255, 255, 0.3)",
     borderRadius: "12px",
     padding: "32px",

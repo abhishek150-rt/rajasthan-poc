@@ -4,19 +4,19 @@ import Admin from "./Admin";
 import User from "./User";
 import { Button } from "@mui/material";
 import OTPComponent from "./OTP";
-import Header from "../../components/Header";
 import { toast } from "react-toastify";
 import { useForm } from "../../hooks/useForm";
 import { useNavigate } from "react-router-dom";
 import { apiPost } from "../../services/api";
 import { apiEndpoints } from "../../config/config";
+import Loader from "../../components/Loader";
 
 const LoginScreen = () => {
   const navigate = useNavigate();
-  const [loginType, setLoginType] = useState("user");
+  const [loginType] = useState("user");
   const [showOTP, setShowOTP] = useState(false);
-
-  const { formData, setFormData, errors, setErrors, resetForm } = useForm({
+  const [loading, setLoading] = useState(false);
+  const { formData, setFormData, errors, setErrors } = useForm({
     citizenUsername: "",
     citizenPassword: "",
     adminUsername: "",
@@ -26,16 +26,16 @@ const LoginScreen = () => {
   const [otpValues, setOtpValues] = useState(["", "", "", ""]);
   const otpRefs = useRef([]);
 
-  const handleLoginTypeChange = (type) => {
-    setLoginType(type);
-    setShowOTP(false);
-    setFormData({
-      citizenUsername: "",
-      citizenPassword: "",
-      adminUsername: "",
-      adminPassword: "",
-    });
-  };
+  // const handleLoginTypeChange = (type) => {
+  //   setLoginType(type);
+  //   setShowOTP(false);
+  //   setFormData({
+  //     citizenUsername: "",
+  //     citizenPassword: "",
+  //     adminUsername: "",
+  //     adminPassword: "",
+  //   });
+  // };
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
@@ -89,6 +89,7 @@ const LoginScreen = () => {
     }
 
     try {
+      setLoading(true);
       const payload = {
         username:
           loginType === "admin"
@@ -136,6 +137,8 @@ const LoginScreen = () => {
         error?.response?.data?.message ||
         "Something went wrong. Please try again.";
       toast.error(message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -252,6 +255,8 @@ const LoginScreen = () => {
           </div>
         </div>
       </div>
+
+      {loading && <Loader />}
     </div>
   );
 };

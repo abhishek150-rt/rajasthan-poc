@@ -6,7 +6,6 @@ import {
   Avatar,
   Switch,
   FormControlLabel,
-  CircularProgress,
   Card,
   CardContent,
   Chip,
@@ -15,10 +14,6 @@ import {
   Button,
   TextField,
   Checkbox,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
 } from "@mui/material";
 import {
   Person,
@@ -37,9 +32,10 @@ import { primaryColor } from "../../styled/login";
 import { apiGet, apiPost } from "../../services/api";
 import { apiEndpoints } from "../../config/config";
 import { toast } from "react-toastify";
-import { FieldLabel, StyledInput } from "../Register";
+import { FieldLabel } from "../Register";
 import { HelpOutline } from "@mui/icons-material";
 import { Tooltip, IconButton } from "@mui/material";
+import Loader from "../../components/Loader";
 
 const GradientBox = styled(Box)(({ theme }) => ({
   background: `linear-gradient(135deg, ${primaryColor} 0%, #764ba2 100%)`,
@@ -287,30 +283,15 @@ const UserProfilePage = () => {
       const expiry = new Date(today);
       expiry.setFullYear(expiry.getFullYear() + 1);
 
-      newConsents[index].givenDate = today.toISOString().split("T")[0];
-      newConsents[index].expiryDate = expiry.toISOString().split("T")[0];
+      // newConsents[index].givenDate = today.toISOString().split("T")[0];
+      // newConsents[index].expiryDate = expiry.toISOString().split("T")[0];
     } else {
-      newConsents[index].givenDate = "";
-      newConsents[index].expiryDate = "";
+      // newConsents[index].givenDate = "";
+      // newConsents[index].expiryDate = "";
     }
 
     setConsents(newConsents);
   };
-
-  if (loading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "100vh",
-        }}
-      >
-        <CircularProgress size={60} thickness={4} sx={{ color: "#667eea" }} />
-      </Box>
-    );
-  }
 
   const handleDateChange = (index, field, value) => {
     const newConsents = [...consents];
@@ -690,6 +671,7 @@ const UserProfilePage = () => {
                                 e.target.value
                               )
                             }
+                            disabled
                             size="small"
                             sx={{
                               width: "250px",
@@ -701,6 +683,7 @@ const UserProfilePage = () => {
                           <TextField
                             type="date"
                             value={consent.expiryDate}
+                            disabled
                             onChange={(e) =>
                               handleDateChange(
                                 index,
@@ -788,6 +771,7 @@ const UserProfilePage = () => {
           </ProfileCard>
         </Box>
       </Box>
+      {loading && <Loader />}
     </>
   );
 };

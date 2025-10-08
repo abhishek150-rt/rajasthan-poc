@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   TablePagination,
@@ -50,7 +50,7 @@ export default function UserTablePage() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [activeFilterCategory, setActiveFilterCategory] = useState("basic");
-  const [customApiCalled,setCustomApiCalled]=useState(false);
+  const [customApiCalled, setCustomApiCalled] = useState(false);
   const [filters, setFilters] = useState({
     // Basic filters
     qualification: [],

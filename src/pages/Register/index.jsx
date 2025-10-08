@@ -1,30 +1,24 @@
 import React, { useState } from "react";
 import {
-  Paper,
   Button,
   Typography,
   Grid,
   Box,
   Avatar,
-  Alert,
   Card,
   CardContent,
   styled,
   alpha,
-  Fade,
   Chip,
 } from "@mui/material";
 import {
   PhotoCamera,
   Badge,
   Person,
-  Wc,
-  Cake,
   FamilyRestroom,
   Phone,
   Email,
   Home,
-  CheckCircle,
 } from "@mui/icons-material";
 import Header from "../../components/Header";
 import { useForm } from "../../hooks/useForm";
@@ -33,6 +27,7 @@ import { primaryColor } from "../../styled/login";
 import { useNavigate } from "react-router-dom";
 import { apiEndpoints } from "../../config/config";
 import { apiPost } from "../../services/api";
+import Loader from "../../components/Loader";
 
 // Styled Components
 const GradientBox = styled(Box)(({ theme }) => ({
@@ -53,8 +48,6 @@ const GradientBox = styled(Box)(({ theme }) => ({
 }));
 
 const FormCard = styled(Card)(({ theme }) => ({
-  //   marginTop: "-40px",
-  //   borderRadius: "24px",
   boxShadow: "0 20px 60px rgba(0,0,0,0.1)",
 }));
 
@@ -178,29 +171,23 @@ const UploadArea = styled(Box)(({ theme }) => ({
 }));
 
 export default function UserRegistration() {
-  const {
-    formData,
-    setFormData,
-    errors,
-    setErrors,
-    handleInputChange,
-    resetForm,
-  } = useForm({
-    aadhaarId: "",
-    fullName: "",
-    gender: "",
-    dob: "",
-    age: "",
-    fatherName: "",
-    motherName: "",
-    mobile: "",
-    email: "",
-    permanentAddress: "",
-    photograph: "",
-  });
+  const { formData, setFormData, errors, setErrors, handleInputChange } =
+    useForm({
+      aadhaarId: "",
+      fullName: "",
+      gender: "",
+      dob: "",
+      age: "",
+      fatherName: "",
+      motherName: "",
+      mobile: "",
+      email: "",
+      permanentAddress: "",
+      photograph: "",
+    });
   const navigate = useNavigate();
-  const [submitSuccess, setSubmitSuccess] = useState(false);
 
+  const [loading, setLoading] = useState(false);
   const genderOptions = ["Male", "Female", "Other"];
 
   const handleImageUpload = (e) => {
@@ -261,9 +248,9 @@ export default function UserRegistration() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitSuccess(false);
 
     if (validateForm()) {
+      setLoading(true);
       try {
         const payload = {
           aadhaarId: formData.aadhaarId,
@@ -286,12 +273,10 @@ export default function UserRegistration() {
           toast.success(
             response?.data?.message || "User Registration successfull!"
           );
-          setSubmitSuccess(true);
         } else {
           toast.error(
             response?.data?.message || "Registration failed. Please try again."
           );
-          setSubmitSuccess(false);
         }
       } catch (error) {
         console.error("Login error:", error);
@@ -299,6 +284,8 @@ export default function UserRegistration() {
           error?.response?.data?.message ||
           "Something went wrong. Please try again.";
         toast.error(message);
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -347,27 +334,6 @@ export default function UserRegistration() {
         <Box sx={{ margin: "auto", pb: 6 }}>
           <FormCard elevation={0}>
             <CardContent sx={{ p: 4 }}>
-              {submitSuccess && (
-                <Fade in={submitSuccess}>
-                  <Alert
-                    icon={<CheckCircle />}
-                    severity="success"
-                    sx={{
-                      mb: 3,
-                      borderRadius: "12px",
-                      background:
-                        "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-                      color: "white",
-                      "& .MuiAlert-icon": {
-                        color: "white",
-                      },
-                    }}
-                  >
-                    Registration successful! Form data logged to console.
-                  </Alert>
-                </Fade>
-              )}
-
               <Box component="form" onSubmit={handleSubmit} noValidate>
                 {/* Photo Upload Section */}
                 <Box sx={{ mb: 5 }}>
@@ -723,6 +689,7 @@ export default function UserRegistration() {
           </FormCard>
         </Box>
       </Box>
+      {loading && <Loader />}
     </div>
   );
 }

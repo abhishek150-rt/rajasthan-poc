@@ -3,7 +3,7 @@ import LoginScreen from "./pages/Login";
 import PrivateRoute from "./components/PrivateRoute";
 import { Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Import CSS
+import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import UserRegisteration from "./pages/Register";
 import UserProfile from "./pages/profile";
