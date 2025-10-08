@@ -38,6 +38,8 @@ import { apiGet, apiPost } from "../../services/api";
 import { apiEndpoints } from "../../config/config";
 import { toast } from "react-toastify";
 import { FieldLabel, StyledInput } from "../Register";
+import { HelpOutline } from "@mui/icons-material";
+import { Tooltip, IconButton } from "@mui/material";
 
 const GradientBox = styled(Box)(({ theme }) => ({
   background: `linear-gradient(135deg, ${primaryColor} 0%, #764ba2 100%)`,
@@ -138,7 +140,6 @@ const UserProfilePage = () => {
       enabled: false,
       givenDate: "",
       expiryDate: "",
-      expiryPeriod: "1",
     },
     {
       id: 2,
@@ -146,7 +147,6 @@ const UserProfilePage = () => {
       enabled: false,
       givenDate: "",
       expiryDate: "",
-      expiryPeriod: "1",
     },
     {
       id: 3,
@@ -154,7 +154,6 @@ const UserProfilePage = () => {
       enabled: false,
       givenDate: "",
       expiryDate: "",
-      expiryPeriod: "1",
     },
     {
       id: 4,
@@ -162,7 +161,6 @@ const UserProfilePage = () => {
       enabled: false,
       givenDate: "",
       expiryDate: "",
-      expiryPeriod: "1",
     },
     {
       id: 5,
@@ -170,7 +168,6 @@ const UserProfilePage = () => {
       enabled: false,
       givenDate: "",
       expiryDate: "",
-      expiryPeriod: "1",
     },
     {
       id: 6,
@@ -178,7 +175,6 @@ const UserProfilePage = () => {
       enabled: false,
       givenDate: "",
       expiryDate: "",
-      expiryPeriod: "1",
     },
   ]);
 
@@ -278,10 +274,10 @@ const UserProfilePage = () => {
   }, []);
 
   const handleConsentToggle = (index) => {
-    if (!willingToConsent) {
-      alert("Please agree to give consent first");
-      return;
-    }
+    // if (!willingToConsent) {
+    //   toast.error("Please agree to give consent first");
+    //   return;
+    // }
 
     const newConsents = [...consents];
     newConsents[index].enabled = !newConsents[index].enabled;
@@ -293,11 +289,9 @@ const UserProfilePage = () => {
 
       newConsents[index].givenDate = today.toISOString().split("T")[0];
       newConsents[index].expiryDate = expiry.toISOString().split("T")[0];
-      newConsents[index].expiryPeriod = "1";
     } else {
       newConsents[index].givenDate = "";
       newConsents[index].expiryDate = "";
-      newConsents[index].expiryPeriod = "1";
     }
 
     setConsents(newConsents);
@@ -608,10 +602,45 @@ const UserProfilePage = () => {
               </Box>
 
               {/* Consents */}
+              {/* Consents */}
               <Box>
                 <SectionTitle>
                   <Shield /> Privacy & Consents
                 </SectionTitle>
+
+                {/* Helper Text */}
+                <Box
+                  sx={{
+                    mb: 3,
+                    p: 2,
+                    backgroundColor: "#eef2ff",
+                    borderRadius: "10px",
+                    border: "1px solid #c7d2fe",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: "14px",
+                      color: "#4338ca",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                  >
+                    Please provide your consent to share your data by clicking
+                    on the toggle buttons below.
+                    <Tooltip
+                      title="Click the toggle switch to enable consent"
+                      arrow
+                    >
+                      <IconButton size="small" sx={{ p: 0.5 }}>
+                        <HelpOutline
+                          sx={{ fontSize: "18px", color: "#667eea" }}
+                        />
+                      </IconButton>
+                    </Tooltip>
+                  </Typography>
+                </Box>
 
                 {/* Consent Toggles */}
                 {consents.map((consent, index) => (
@@ -621,7 +650,7 @@ const UserProfilePage = () => {
                         <Switch
                           checked={consent.enabled}
                           onChange={() => handleConsentToggle(index)}
-                          disabled={!willingToConsent}
+                          // disabled={!willingToConsent}
                           sx={{
                             "& .MuiSwitch-switchBase.Mui-checked": {
                               color: "#667eea",
@@ -648,7 +677,7 @@ const UserProfilePage = () => {
 
                     {/* Date Fields - Show only when toggle is enabled */}
                     {consent.enabled && (
-                      <div style={{ display: "flex", gap: 10 }}>
+                      <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
                         <div>
                           <FieldLabel>Consent Given Date</FieldLabel>
                           <TextField
@@ -663,55 +692,27 @@ const UserProfilePage = () => {
                             }
                             size="small"
                             sx={{
-                              // flex: "1 1 200px",
                               width: "250px",
-                              // margin: "0px 10px",
                             }}
                           />
                         </div>
                         <div>
-                          <FieldLabel>Expiry Period</FieldLabel>
-                          <FormControl size="small" sx={{ width: "250px" }}>
-                            <Select
-                              value={consent.expiryPeriod || "1"}
-                              onChange={(e) => {
-                                const years = e.target.value;
-                                handleDateChange(index, "expiryPeriod", years);
-
-                                // Auto-calculate expiry date based on given date and selected years
-                                if (consent.givenDate) {
-                                  const givenDate = new Date(consent.givenDate);
-                                  const expiryDate = new Date(givenDate);
-                                  expiryDate.setFullYear(
-                                    expiryDate.getFullYear() + parseInt(years)
-                                  );
-                                  handleDateChange(
-                                    index,
-                                    "expiryDate",
-                                    expiryDate.toISOString().split("T")[0]
-                                  );
-                                }
-                              }}
-                              sx={{
-                                "& .MuiOutlinedInput-notchedOutline": {
-                                  borderColor: "#e2e8f0",
-                                },
-                                "&:hover .MuiOutlinedInput-notchedOutline": {
-                                  borderColor: "#667eea",
-                                },
-                                "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                  {
-                                    borderColor: "#667eea",
-                                  },
-                              }}
-                            >
-                              <MenuItem value="1">1 Year</MenuItem>
-                              <MenuItem value="2">2 Years</MenuItem>
-                              <MenuItem value="3">3 Years</MenuItem>
-                              <MenuItem value="5">5 Years</MenuItem>
-                              <MenuItem value="10">10 Years</MenuItem>
-                            </Select>
-                          </FormControl>
+                          <FieldLabel>Expiry Date</FieldLabel>
+                          <TextField
+                            type="date"
+                            value={consent.expiryDate}
+                            onChange={(e) =>
+                              handleDateChange(
+                                index,
+                                "expiryDate",
+                                e.target.value
+                              )
+                            }
+                            size="small"
+                            sx={{
+                              width: "250px",
+                            }}
+                          />
                         </div>
                       </div>
                     )}
@@ -753,6 +754,7 @@ const UserProfilePage = () => {
                     }
                   />
                 </Box>
+
                 <Button
                   variant="contained"
                   disabled={
