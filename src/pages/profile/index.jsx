@@ -127,7 +127,7 @@ const ConsentCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-const UserProfilePage = () => {
+const UserProfile = () => {
   const [formData, setFormData] = useState(null);
   const [consents, setConsents] = useState([
     {
@@ -216,6 +216,7 @@ const UserProfilePage = () => {
 
   const giveUserConsents = async () => {
     try {
+      setLoading(true);
       const citizenId = localStorage.getItem("userId");
       const consentPayload = consents.map((item) => ({
         category: item.name.toLowerCase(),
@@ -241,29 +242,31 @@ const UserProfilePage = () => {
         error?.response?.data?.message ||
         "Something went wrong. Please try again.";
       toast.error(message);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    // Simulating API call with demo data
-    setTimeout(() => {
-      setFormData({
-        photograph:
-          "https://ui-avatars.com/api/?name=John+Doe&size=200&background=667eea&color=fff",
-        aadhaarId: "XXXX XXXX 1234",
-        fullName: "John Doe",
-        gender: "Male",
-        dob: "15/01/1990",
-        fatherName: "Robert Doe",
-        motherName: "Mary Doe",
-        mobile: "+91 98765 43210",
-        email: "john.doe@example.com",
-        permanentAddress:
-          "123, Green Valley Apartments, MG Road, Bangalore, Karnataka - 560001",
-      });
+    // // Simulating API call with demo data
+    // setTimeout(() => {
+    //   setFormData({
+    //     photograph:
+    //       "https://ui-avatars.com/api/?name=John+Doe&size=200&background=667eea&color=fff",
+    //     aadhaarId: "XXXX XXXX 1234",
+    //     fullName: "John Doe",
+    //     gender: "Male",
+    //     dob: "15/01/1990",
+    //     fatherName: "Robert Doe",
+    //     motherName: "Mary Doe",
+    //     mobile: "+91 98765 43210",
+    //     email: "john.doe@example.com",
+    //     permanentAddress:
+    //       "123, Green Valley Apartments, MG Road, Bangalore, Karnataka - 560001",
+    //   });
 
-      setLoading(false);
-    }, 1000);
+    //   setLoading(false);
+    // }, 1000);
 
     getUserProfileData();
     getUserConsents();
@@ -657,48 +660,52 @@ const UserProfilePage = () => {
                     />
 
                     {/* Date Fields - Show only when toggle is enabled */}
-                    {consent.enabled && (
-                      <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
-                        <div>
-                          <FieldLabel>Consent Given Date</FieldLabel>
-                          <TextField
-                            type="date"
-                            value={consent.givenDate}
-                            onChange={(e) =>
-                              handleDateChange(
-                                index,
-                                "givenDate",
-                                e.target.value
-                              )
-                            }
-                            disabled
-                            size="small"
-                            sx={{
-                              width: "250px",
-                            }}
-                          />
+                    {consent.enabled &&
+                      consent.givenDate &&
+                      consent.expiryDate && (
+                        <div
+                          style={{ display: "flex", gap: 10, marginTop: 16 }}
+                        >
+                          <div>
+                            <FieldLabel>Consent Given Date</FieldLabel>
+                            <TextField
+                              type="date"
+                              value={consent.givenDate}
+                              onChange={(e) =>
+                                handleDateChange(
+                                  index,
+                                  "givenDate",
+                                  e.target.value
+                                )
+                              }
+                              disabled
+                              size="small"
+                              sx={{
+                                width: "250px",
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <FieldLabel>Expiry Date</FieldLabel>
+                            <TextField
+                              type="date"
+                              value={consent.expiryDate}
+                              disabled
+                              onChange={(e) =>
+                                handleDateChange(
+                                  index,
+                                  "expiryDate",
+                                  e.target.value
+                                )
+                              }
+                              size="small"
+                              sx={{
+                                width: "250px",
+                              }}
+                            />
+                          </div>
                         </div>
-                        <div>
-                          <FieldLabel>Expiry Date</FieldLabel>
-                          <TextField
-                            type="date"
-                            value={consent.expiryDate}
-                            disabled
-                            onChange={(e) =>
-                              handleDateChange(
-                                index,
-                                "expiryDate",
-                                e.target.value
-                              )
-                            }
-                            size="small"
-                            sx={{
-                              width: "250px",
-                            }}
-                          />
-                        </div>
-                      </div>
-                    )}
+                      )}
                   </ConsentCard>
                 ))}
 
@@ -740,9 +747,7 @@ const UserProfilePage = () => {
 
                 <Button
                   variant="contained"
-                  disabled={
-                    !willingToConsent || !consents.some((c) => c.enabled)
-                  }
+                  disabled={!willingToConsent}
                   sx={{
                     textTransform: "none",
                     px: 5,
@@ -776,4 +781,4 @@ const UserProfilePage = () => {
   );
 };
 
-export default UserProfilePage;
+export default UserProfile;
