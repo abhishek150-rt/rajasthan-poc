@@ -237,13 +237,6 @@ const LoginScreen = () => {
                           >
                             Register here
                           </span>
-
-                          <span
-                            style={styles.link}
-                            onClick={() => navigate("/profile")}
-                          >
-                            Check Profile
-                          </span>
                         </span>
                       )}
                     </div>

@@ -1,15 +1,11 @@
 import React from "react";
 import {
-  Box,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
-  Chip,
-  Avatar,
   styled,
   alpha,
 } from "@mui/material";
@@ -67,7 +63,10 @@ const DynamicTable = ({ filteredUsers, page = 0, rowsPerPage = 10 }) => {
           <TableRow>
             {headers.map((header) => (
               <TableCell key={header}>
-                {header.replace(/\./g, " ").replace(/([A-Z])/g, " $1").trim()}
+                {header
+                  .replace(/\./g, " ")
+                  .replace(/([A-Z])/g, " $1")
+                  .trim()}
               </TableCell>
             ))}
           </TableRow>

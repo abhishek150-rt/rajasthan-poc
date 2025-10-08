@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { LogoImage, primaryColor, styles } from "../styled/login";
+import { primaryColor } from "../styled/login";
 import * as ReactDOMServer from "react-dom/server";
 import {
   Avatar,
@@ -7,18 +7,14 @@ import {
   MenuItem,
   Typography,
   IconButton,
-  CssBaseline,
   AppBar,
   Box,
   Toolbar,
   Tooltip,
 } from "@mui/material";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MenuIcon from "@mui/icons-material/Menu";
+
 import { useNavigate } from "react-router-dom";
-import { styled, useTheme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 export const settings = [{ id: 2, name: "Logout" }];
 const drawerWidth = 240;
 
@@ -45,13 +41,13 @@ const Header = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [open, setOpen] = useState(false);
+  const [open] = useState(false);
   const isLoggedIn = localStorage.getItem("token") ? true : false;
   const notRegisterPage = window.location.pathname !== "/register";
 
   useEffect(() => {
     if (isLoggedIn) {
-      const storedUser = JSON.parse(localStorage.getItem("user")); // Optional: store user info in localStorage
+      const storedUser = JSON.parse(localStorage.getItem("user")); 
       setUser(storedUser || { fullName: "User" });
     }
   }, [isLoggedIn]);
@@ -117,7 +113,11 @@ const Header = () => {
                 src={"https://doitc.rajasthan.gov.in/Content/images/logo.png"}
                 alt="nav_logo"
                 height="60px"
-                style={{ objectFit: "cover", cursor: "pointer" ,marginTop:"5px"}}
+                style={{
+                  objectFit: "cover",
+                  cursor: "pointer",
+                  marginTop: "5px",
+                }}
                 onClick={() => navigate("/home")}
               />
             </Typography>

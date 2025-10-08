@@ -176,14 +176,31 @@ const UserProfile = () => {
 
   const [willingToConsent, setWillingToConsent] = useState(false);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const getUserProfileData = async () => {
     try {
+      setLoading(true);
       const userId = localStorage.getItem("userId");
       const response = await apiGet(`${apiEndpoints.userDetails}/${userId}`);
       if (response.data.status === 200) {
-        setFormData(response.data.data);
+        // setFormData(response.data.data);
+
+        setFormData({
+          photograph:
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0FUYuR8haHAAtZYzpO0fV8OOA_K2ASz5BLQ&s",
+          aadhaarId: "XXXX XXXX 1234",
+          fullName: "John Doe",
+          gender: "Male",
+          dob: "15/01/1990",
+          fatherName: "Robert Doe",
+          motherName: "Mary Doe",
+          mobile: "+91 98765 43210",
+          email: "john.doe@example.com",
+          permanentAddress:
+            "123, Green Valley Apartments, MG Road, Bangalore, Karnataka - 560001",
+        });
+
         toast.success("User data fetched successfully");
       } else {
         toast.error(response.data.messsage || "Failed to fetch user data");
@@ -193,6 +210,8 @@ const UserProfile = () => {
         error?.response?.data?.message ||
         "Something went wrong. Please try again.";
       toast.error(message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -248,26 +267,6 @@ const UserProfile = () => {
   };
 
   useEffect(() => {
-    // // Simulating API call with demo data
-    // setTimeout(() => {
-    //   setFormData({
-    //     photograph:
-    //       "https://ui-avatars.com/api/?name=John+Doe&size=200&background=667eea&color=fff",
-    //     aadhaarId: "XXXX XXXX 1234",
-    //     fullName: "John Doe",
-    //     gender: "Male",
-    //     dob: "15/01/1990",
-    //     fatherName: "Robert Doe",
-    //     motherName: "Mary Doe",
-    //     mobile: "+91 98765 43210",
-    //     email: "john.doe@example.com",
-    //     permanentAddress:
-    //       "123, Green Valley Apartments, MG Road, Bangalore, Karnataka - 560001",
-    //   });
-
-    //   setLoading(false);
-    // }, 1000);
-
     getUserProfileData();
     getUserConsents();
   }, []);
