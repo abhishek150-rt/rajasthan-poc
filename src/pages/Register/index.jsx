@@ -171,20 +171,26 @@ const UploadArea = styled(Box)(({ theme }) => ({
 }));
 
 export default function UserRegistration() {
-  const { formData, setFormData, errors, setErrors, handleInputChange } =
-    useForm({
-      aadhaarId: "",
-      fullName: "",
-      gender: "",
-      dob: "",
-      age: "",
-      fatherName: "",
-      motherName: "",
-      mobile: "",
-      email: "",
-      permanentAddress: "",
-      photograph: "",
-    });
+  const {
+    formData,
+    setFormData,
+    errors,
+    setErrors,
+    handleInputChange,
+    resetForm,
+  } = useForm({
+    aadhaarId: "",
+    fullName: "",
+    gender: "",
+    dob: "",
+    age: "",
+    fatherName: "",
+    motherName: "",
+    mobile: "",
+    email: "",
+    permanentAddress: "",
+    photograph: "",
+  });
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -231,13 +237,13 @@ export default function UserRegistration() {
       newErrors.email = "Valid email is required";
     }
 
-    if (
-      !formData.permanentAddress ||
-      formData.permanentAddress.trim().length < 10
-    ) {
-      newErrors.permanentAddress =
-        "Permanent address is required (min 10 characters)";
-    }
+    // if (
+    //   !formData.permanentAddress ||
+    //   formData.permanentAddress.trim().length < 10
+    // ) {
+    //   newErrors.permanentAddress =
+    //     "Permanent address is required (min 10 characters)";
+    // }
 
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) {
@@ -273,6 +279,7 @@ export default function UserRegistration() {
           toast.success(
             response?.data?.message || "User Registration successfull!"
           );
+          resetForm();
         } else {
           toast.error(
             response?.data?.message || "Registration failed. Please try again."
@@ -593,7 +600,7 @@ export default function UserRegistration() {
                         <FieldLabel>
                           <Home sx={{ fontSize: 18 }} />
                           Permanent Address{" "}
-                          <span style={{ color: "#ef4444" }}>*</span>
+                          {/* <span style={{ color: "#ef4444" }}>*</span> */}
                         </FieldLabel>
                         <StyledTextarea
                           value={formData.permanentAddress}
@@ -603,13 +610,13 @@ export default function UserRegistration() {
                               e.target.value
                             )
                           }
-                          error={errors.permanentAddress}
+                          // error={errors.permanentAddress}
                           placeholder="Enter your complete permanent address"
                           rows={3}
                         />
-                        {errors.permanentAddress && (
+                        {/* {errors.permanentAddress && (
                           <ErrorText>⚠ {errors.permanentAddress}</ErrorText>
-                        )}
+                        )} */}
                       </Box>
                     </Grid>
                   </Grid>
@@ -643,19 +650,7 @@ export default function UserRegistration() {
                       },
                     }}
                     onClick={() => {
-                      setFormData({
-                        aadhaarId: "",
-                        fullName: "",
-                        gender: "",
-                        dob: "",
-                        age: "",
-                        fatherName: "",
-                        motherName: "",
-                        mobile: "",
-                        email: "",
-                        permanentAddress: "",
-                        photograph: "",
-                      });
+                      resetForm();
                       setErrors({});
                       navigate(-1);
                     }}
