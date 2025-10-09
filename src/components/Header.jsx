@@ -42,13 +42,13 @@ const Header = () => {
   const [user, setUser] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [open] = useState(false);
-  const isLoggedIn = localStorage.getItem("token") ? true : false;
+  const isLoggedIn = localStorage.getItem("citizenId") ? true : false;
   const notRegisterPage = window.location.pathname !== "/register";
 
   useEffect(() => {
     if (isLoggedIn) {
-      const storedUser = JSON.parse(localStorage.getItem("user")); 
-      setUser(storedUser || { fullName: "User" });
+      const storedUser = localStorage.getItem("name");
+      setUser({ fullName: storedUser });
     }
   }, [isLoggedIn]);
 

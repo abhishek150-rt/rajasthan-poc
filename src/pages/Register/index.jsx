@@ -275,9 +275,9 @@ export default function UserRegistration() {
         const response = await apiPost(apiEndpoints.register, payload);
 
         // Check for status
-        if (response?.data?.status === 200) {
+        if (response && response.message) {
           toast.success(
-            response?.data?.message || "User Registration successfull!"
+            response?.message || "User Registration successfull!"
           );
           resetForm();
         } else {

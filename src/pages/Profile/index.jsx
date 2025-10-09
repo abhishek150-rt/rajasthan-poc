@@ -181,26 +181,38 @@ const UserProfile = () => {
   const getUserProfileData = async () => {
     try {
       setLoading(true);
-      const userId = localStorage.getItem("userId");
-      const response = await apiGet(`${apiEndpoints.userDetails}/${userId}`);
-      if (response.data.status === 200) {
+      const citizenId = localStorage.getItem("citizenId");
+      const response = await apiGet(`${apiEndpoints.userDetails}/${citizenId}`);
+
+      if (response.citizenId) {
         // setFormData(response.data.data);
-
+        const { citizenId, fullName, basicIdentity } = response;
+        const {
+          aadhaarId,
+          age,
+          dob,
+          fatherName,
+          motherName,
+          gender,
+          permanentAddress,
+          photograph,
+          email,
+          mobile,
+        } = basicIdentity;
         setFormData({
-          photograph:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0FUYuR8haHAAtZYzpO0fV8OOA_K2ASz5BLQ&s",
-          aadhaarId: "XXXX XXXX 1234",
-          fullName: "John Doe",
-          gender: "Male",
-          dob: "15/01/1990",
-          fatherName: "Robert Doe",
-          motherName: "Mary Doe",
-          mobile: "+91 98765 43210",
-          email: "john.doe@example.com",
-          permanentAddress:
-            "123, Green Valley Apartments, MG Road, Bangalore, Karnataka - 560001",
+          citizenId,
+          fullName,
+          aadhaarId,
+          age,
+          dob,
+          fatherName,
+          motherName,
+          gender,
+          mobile,
+          permanentAddress,
+          photograph,
+          email,
         });
-
         toast.success("User data fetched successfully");
       } else {
         toast.error(response.data.messsage || "Failed to fetch user data");
@@ -217,10 +229,31 @@ const UserProfile = () => {
 
   const getUserConsents = async () => {
     try {
-      const userId = localStorage.getItem("userId");
-      const response = await apiGet(`${apiEndpoints.userConsents}/${userId}`);
-      if (response.data.status === 200) {
-        setConsents(response.data.data);
+      const citizenId = localStorage.getItem("citizenId");
+      const response = await apiGet(
+        `${apiEndpoints.userConsents}/${citizenId}`
+      );
+      if (response.citizenId && response.consent.length > 0) {
+        const updatedConsents = consents.map((consent) => {
+          // find matching category from API response
+          const match = response.consent.find(
+            (item) => item.category.toLowerCase() === consent.name.toLowerCase()
+          );
+
+          if (match) {
+            return {
+              ...consent,
+              enabled: match.status === "Y",
+              givenDate: match.validFrom,
+              expiryDate: match.validTo,
+            };
+          }
+
+          // if no match found, return as-is
+          return consent;
+        });
+
+        setConsents(updatedConsents);
         toast.success("User consents fetched successfully");
       } else {
         toast.error(response.data.messsage || "Failed to fetch user consents");
@@ -236,7 +269,7 @@ const UserProfile = () => {
   const giveUserConsents = async () => {
     try {
       setLoading(true);
-      const citizenId = localStorage.getItem("userId");
+      const citizenId = localStorage.getItem("citizenId");
       const consentPayload = consents.map((item) => ({
         category: item.name.toLowerCase(),
         status: item.enabled ? "Y" : "N",
@@ -249,8 +282,28 @@ const UserProfile = () => {
 
       const response = await apiPost(apiEndpoints.userConsents, payload);
 
-      if (response && response.data && response.data.status === 200) {
-        toast.success("User consents given successfully");
+      if (response && response.consents) {
+        toast.success(response.message || "User consents given successfully");
+        const updatedConsents = consents.map((consent) => {
+          // find matching category from API response
+          const match = response.consent.find(
+            (item) => item.category.toLowerCase() === consent.name.toLowerCase()
+          );
+
+          if (match) {
+            return {
+              ...consent,
+              enabled: match.status === "Y",
+              givenDate: match.validFrom,
+              expiryDate: match.validTo,
+            };
+          }
+
+          // if no match found, return as-is
+          return consent;
+        });
+
+        setConsents(updatedConsents);
       } else {
         toast.error(
           response?.data?.message || "Failed to provide user consents"

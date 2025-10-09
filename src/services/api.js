@@ -5,21 +5,21 @@ import config from "../config/config";
 const BASE_URL = config.baseURL;
 
 export const getAuthToken = () => {
-  return localStorage.getItem("token");
+  return localStorage.getItem("citizenId");
 };
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  // headers: {
+  //   "Content-Type": "application/json",
+  // },
 });
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = getAuthToken();
-    if (token) {
-      // config.headers.Authorization = `Bearer ${token}`;
+    const citizenId = getAuthToken();
+    if (citizenId) {
+      // config.headers.Authorization = `Bearer ${citizenId}`;
     }
     return config;
   },

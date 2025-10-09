@@ -17,8 +17,8 @@ const LoginScreen = () => {
   const [showOTP, setShowOTP] = useState(false);
   const [loading, setLoading] = useState(false);
   const { formData, setFormData, errors, setErrors } = useForm({
-    citizenUsername: "",
-    citizenPassword: "",
+    citizenUsername: "ramesh",
+    citizenPassword: "1111",
     adminUsername: "",
     adminPassword: "",
   });
@@ -108,8 +108,8 @@ const LoginScreen = () => {
 
       const response = await apiPost(endpoint, payload);
 
-      if (response?.data?.status === 200) {
-        const { userId, citizenId, name, mobile, otp } = response?.data || {};
+      if (response?.userId) {
+        const { userId, citizenId, name, mobile, otp } = response || {};
 
         // Store in localStorage if the value exists
         const keysToStore = { userId, citizenId, name, mobile, otp };
@@ -128,7 +128,7 @@ const LoginScreen = () => {
         }
       } else {
         toast.error(
-          response?.data?.message || "Login failed. Please try again."
+          response?.data?.message || "Login failed. Kansishk Please try again."
         );
       }
     } catch (error) {
